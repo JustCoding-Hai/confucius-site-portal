@@ -64,10 +64,17 @@ export default {
     // 登录
     submitLogin() {
       loginApi.submitLogin(this.user).then(response=>{
+        //过期时间
+        var inOneHour=1/24
         //将token写入到cookie中
-        cookie.set('confucius_jwt_token',response.data,{domain:'localhost'})
-        //跳转到首页
-        window.location.href='/'
+        cookie.set('confucius_jwt_token',response.data,{domain:'localhost',expires: inOneHour})
+        //注册成功后，再进行登录跳转到首页
+        if (document.referrer.indexOf('register') !== -1) {
+          window.location.href = '/'
+        }else{
+          //登录成功后回到上一个页面
+          history.go(-1)
+        }
       })
 
     }

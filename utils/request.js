@@ -42,14 +42,27 @@ service.interceptors.response.use(
       // 清除cookie
       cookie.set('confucius_jwt_token', '', { domain: 'localhost' })
       Message({
-        message: '当前会话超时，请重新登录！',
+        message: res.message,
         type: 'warning',
         duration: 5 * 1000
       })
-      return response.data //不显示错误信息
+      return response.data 
     }else if(res.code===25000){//订单支付中
       return response.data//不显示错误信息
-    } else {
+    } 
+    else if(res.code===28004){//鉴权失败
+      Message({
+        message: res.message,
+        type: 'warning',
+        duration: 2 * 1000
+      })
+      //三秒后再跳转到登陆页
+      setTimeout(()=>{
+        window.location.href='/login'
+      },2000)
+      return
+    } 
+    else {
       Message({
           message: res.message,
           type: 'error',
